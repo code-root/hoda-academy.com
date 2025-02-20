@@ -316,22 +316,6 @@ body {
 
       @include('admin.layout.navbar')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @yield('contant')
 
 <!-- Footer -->
@@ -347,7 +331,6 @@ body {
     </div>
   </footer>
   <!-- / Footer -->
-
 
             <div class="content-backdrop fade"></div>
           </div>
