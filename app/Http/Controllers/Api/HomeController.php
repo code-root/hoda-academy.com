@@ -307,7 +307,7 @@ $customer_id = Auth::guard('customer')->id();
 
     public function subscribe(Request $request)
     {
-        $customer_id = Auth::guard('customer')->id();
+        // $customer_id = Auth::guard('customer')->id();
 
 $subscribe= Subscribe::where('email', $request->email)->first();
 if (!$subscribe) {
@@ -351,7 +351,7 @@ if (!$subscribe) {
 
 public function contact(Request $request)
 {
-    $customer_id = Auth::guard('customer')->id();
+    $customer_id = Auth::guard('customer')->id() ?? 1;
     $ipAddress = $request->ip();
 
      $todayCount = Contact::whereDate('created_at', today())

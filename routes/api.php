@@ -20,6 +20,9 @@ Route::get('/customer-id', function () {
     return  json_decode(request()->cookie('token'), true);
 
 });
+Route::post('contact', [HomeController::class, 'contact']);
+Route::post('subscribe', [HomeController::class,'subscribe'])->name('subscribe');
+
 Route::group([
 
     'middleware' => 'api',
@@ -61,11 +64,9 @@ Route::group([
       Route::get('courses/{lang}', [HomeController::class, 'courses'])->name('courses');
       Route::get('courses/{lang}/{slug}', [HomeController::class, 'courses_details'])->name('courses_details');
 
-      Route::post('contact', [HomeController::class, 'contact']);
 
     //   Route::get('gallary', [HomeController::class, 'gallary']);
 
-      Route::post('subscribe', [HomeController::class,'subscribe'])->name('subscribe');
 
       Route::get('teacher/{lang}', [HomeController::class, 'teacher'])->name('teacher');
       Route::get('teacher/{lang}/{slug}', [HomeController::class, 'teacher_details']) ;
