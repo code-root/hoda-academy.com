@@ -75,7 +75,7 @@ class SendMailNotification
 
 
 
-            Mail::to($subscriber->email)->send(new NewBlogNotification($content));
+            // Mail::to($subscriber->email)->send(new NewBlogNotification($content));
 
 
 

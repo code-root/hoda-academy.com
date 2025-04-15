@@ -1,17 +1,7 @@
  @extends('admin.layout.app')
 
  @section('page', 'Create blog')
-
-
  @section('contant')
-
-
-
-
-
-
-
-
      @if ($errors->any())
          <div class="alert alert-danger">
              <ul>
@@ -21,10 +11,6 @@
              </ul>
          </div>
      @endif
-
-
-
-
      {{-- @dd($errors) --}}
      <!-- Content wrapper -->
      <div class="content-wrapper">

