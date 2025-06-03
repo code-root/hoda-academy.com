@@ -48,12 +48,29 @@ class TeacherController extends Controller
 
     }
 
-    public function store( Request $request)
-    {
 
-        return$request;
+        public function store(Request $request)
+        {
+            $validated = $request->validate([
+                'name_ar' => 'required|string|max:255',
+                'name_en' => 'required|string|max:255',
+                'meta_description_ar' => 'required|string|max:255',
+                'meta_description_en' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'country_id' => 'required|exists:countries,id',
+                'category' => 'required|string',
+                'overview_ar' => 'required|string',
+                'overview_en' => 'required|string',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'sometimes|string|min:8',
+                'photo' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'title_ar1.*' => 'sometimes|string|max:255',
+                'title_en1.*' => 'sometimes|string|max:255',
+                'description_ar1.*' => 'sometimes|string',
+                'description_en1.*' => 'sometimes|string',
+            ]);
 
-        $user=User::create($request->except('photo','title_ar1','title_en1','description_ar1','description_en1'));
+            $user = User::create($request->except('photo', 'title_ar1', 'title_en1', 'description_ar1', 'description_en1'));
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
             $user->save();

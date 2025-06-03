@@ -475,27 +475,23 @@
 
 
                             ///////////6////////////
-                            , {
-                                targets: 6,
-                                responsivePriority: 1,
-                                render: function(t, e, s, a) {
-
-
-
-
-                                    var n = s.cat_id;
-
-                                    return `
-                                        <div class="d-inline-block text-nowrap">
-                                            <a href="teachers/${s.id}/edit">
-                                            <button class="btn btn-sm btn-icon">
-                                                <i class="bx bx-edit"></i>
-                                            </button>
-                                            </a>
-                                        </div>`;
-
-                                }
-                            }
+                            {
+    targets: 6,
+    responsivePriority: 1,
+    render: function(t, e, s, a) {
+        return `
+            <div class="d-inline-block text-nowrap">
+                <a href="teachers/${s.id}/edit">
+                    <button class="btn btn-sm btn-icon">
+                        <i class="bx bx-edit"></i>
+                    </button>
+                </a>
+                <button class="btn btn-sm btn-icon delete-btn" data-id="${s.id}" data-bs-toggle="modal" data-bs-target="#basicModal2">
+                    <i class="bx bx-trash"></i>
+                </button>
+            </div>`;
+    }
+}
 
                             ////////////6//////////////
 

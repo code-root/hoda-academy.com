@@ -1,416 +1,263 @@
 @extends('admin.layout.app')
-
 @section('page', 'Order List')
-
-
 @section('contant')
 
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row g-4">
+            <div class="col-12 col-lg-12 pt-4 pt-lg-0">
+                <div class="tab-content p-0">
+                    <div class="tab-pane fade show active" id="store_details" role="tabpanel">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title m-0">{!! __('admin.Add Teachers') !!}</h5>
+                            </div>
+                            <div class="card-body">
+                                @if (session('success'))
+                                    <div class="alert alert-success alert-dismissible fade show text-center">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
 
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
 
-    <!-- Content wrapper -->
-    <div class="content-wrapper">
+                                <form action="{{ route('teachers.store') }}" method="post" enctype="multipart/form-data">
+                                    @csrf
 
-        <!-- Content -->
-        <div class="container-xxl flex-grow-1 container-p-y">
-
-
-
-            <div class="row g-4">
-
-
-                <!-- Options -->
-                <div class="col-12 col-lg-12 pt-4 pt-lg-0">
-                    <div class="tab-content p-0">
-                        <!-- Store Details Tab -->
-                        <div class="tab-pane fade show active" id="store_details" role="tabpanel">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h5 class="card-title m-0">{!! __('admin.Add Teachers') !!}</h5>
-                                </div>
-                                <div class="card-body">
-                                    {{-- --------------------------------------------------------------Alert-------------------------------------------------------------------- --}}
-
-
-                                    @if (session('success'))
-                                        <div id="success-message"
-                                            class="alert alert-success alert-dismissible fade show text-center"
-                                            role="alert">
-                                            {{ session('success') }}
-                                        </div>
-                                    @endif
-
-                                    @if (session('error'))
-                                        <div id="danger-message"
-                                            class="alert alert-danger alert-dismissible fade show text-center"
-                                            role="alert">
-                                            {{ session('error') }}
-                                        </div>
-                                    @endif
-
-
-
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                {{-- @dd($errors) --}}
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                    {{-- --------------------------------------------------------------End Alert-------------------------------------------------------------------- --}}
-
-                                    <form action="{{ route('teachers.store') }}" method="post"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        @method('post')
-
-                                        <div class="row mb-3 g-3">
-                                            <!-- Name -->
-                                            {{-- -------------------------------------------------------------- name_ar-------------------------------------------------------------------- --}}
-                                            <div class="mb-3">
+                                    <div class="row mb-3 g-3">
+                                        <!-- Arabic Name -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Name_ar') !!}</label>
-                                                <input type="text" class="form-control" required
-                                                    id="ecommerce-product-name" value="{{ old('name_ar') }}"
-                                                    placeholder=" {!! __('admin.Name_ar1') !!}" name="name_ar"
-                                                    aria-label="Product name">
-
-
-
-
+                                                <input type="text" class="form-control @error('name_ar') is-invalid @enderror"
+                                                       value="{{ old('name_ar') }}" name="name_ar" required>
                                                 @error('name_ar')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
+                                        </div>
 
-                                            {{-- --------------------------------------------------------------end name_ar-------------------------------------------------------------------- --}}
-
-                                            {{-- -------------------------------------------------------------- name_en-------------------------------------------------------------------- --}}
-                                            <div class="mb-3">
+                                        <!-- English Name -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Name_en') !!}</label>
-                                                <input type="text" class="form-control" required
-                                                    id="ecommerce-product-name" value="{{ old('name_en') }}"
-                                                    placeholder=" {!! __('admin.Name_en1') !!}" name="name_en"
-                                                    aria-label="Product name">
-
-
-
-
+                                                <input type="text" class="form-control @error('name_en') is-invalid @enderror"
+                                                       value="{{ old('name_en') }}" name="name_en" required>
                                                 @error('name_en')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
+                                        </div>
 
-                                            {{-- --------------------------------------------------------------end name_en-------------------------------------------------------------------- --}}
-
-
-                                            {{-- -------------------------------------------------------------- meta_description_ar-------------------------------------------------------------------- --}}
-                                            <div class="mb-3">
+                                        <!-- Meta Description (Arabic) -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Meta_Description_ar') !!}</label>
-
-
-                                                <input type="text" class="form-control" required
-                                                    id="ecommerce-product-name" value="{{ old('meta_description_ar') }}"
-                                                    placeholder="{!! __('admin.Meta_Description_ar1') !!}" name="meta_description_ar"
-                                                    aria-label="Product title">
-
+                                                <input type="text" class="form-control @error('meta_description_ar') is-invalid @enderror"
+                                                       value="{{ old('meta_description_ar') }}" name="meta_description_ar" required>
                                                 @error('meta_description_ar')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
+                                        </div>
 
-                                            {{-- --------------------------------------------------------------end meta_description_ar-------------------------------------------------------------------- --}}
-
-                                            {{-- -------------------------------------------------------------- Meta_Description_en-------------------------------------------------------------------- --}}
-                                            <div class="mb-3">
+                                        <!-- Meta Description (English) -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Meta_Description_en') !!}</label>
-                                                <input type="text" class="form-control" required
-                                                    id="ecommerce-product-name" value="{{ old('meta_description_en') }}"
-                                                    placeholder="{!! __('admin.Meta_Description_en1') !!}" name="meta_description_en"
-                                                    aria-label="Product title">
-
-
-
+                                                <input type="text" class="form-control @error('meta_description_en') is-invalid @enderror"
+                                                       value="{{ old('meta_description_en') }}" name="meta_description_en" required>
                                                 @error('meta_description_en')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
+                                        </div>
 
-                                            {{-- --------------------------------------------------------------end Meta_Description_en-------------------------------------------------------------------- --}}
-
-
-                                            {{-- -------------------------------------------------------------- phone-------------------------------------------------------------------- --}}
-                                            <div class="mb-3">
+                                        <!-- Phone -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Phone') !!}</label>
-                                                <input type="text" class="form-control" required
-                                                    id="ecommerce-product-name" value="{{ old('phone') }}"
-                                                    placeholder=" {!! __('admin.Phone') !!}" name="phone"
-                                                    aria-label="Product name">
-
-
-
-
+                                                <input type="text" class="form-control @error('phone') is-invalid @enderror"
+                                                       value="{{ old('phone') }}" name="phone" required>
                                                 @error('phone')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
+                                        </div>
 
-                                            {{-- --------------------------------------------------------------end phone-------------------------------------------------------------------- --}}
-                                            {{-- -------------------------------------------------------------- Country-------------------------------------------------------------------- --}}
-                                            <div class="mb-3">
+                                        <!-- Country -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Country') !!}</label>
-                                                <select id="mySelect" name="country_id" class="select2 form-select"
-                                                    data-placeholder="Select Country">
+                                                <select name="country_id" class="form-select @error('country_id') is-invalid @enderror" required>
                                                     <option value="" disabled selected>Select Country</option>
-                                                    @foreach ($country as $country)
-                                                        <option
-                                                            @if ($country->id == 1) {{ 'selected' }} @endif
-                                                            value="{{ $country->id }}">{{ $country->name }}</option>
+                                                    @foreach ($country as $item)
+                                                        <option value="{{ $item->id }}" {{ old('country_id') == $item->id ? 'selected' : '' }}>
+                                                            {{ $item->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
-
-
-
-
-                                                @error('country')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @error('country_id')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
+                                        </div>
 
-                                            {{-- --------------------------------------------------------------end Country-------------------------------------------------------------------- --}}
-
-
-                                            {{-- -------------------------------------------------------------- Category-------------------------------------------------------------------- --}}
-                                            <div class="mb-3">
+                                        <!-- Category -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Category') !!}</label>
-                                                <select id="mySelect" name="category" class="select2 form-select"
-                                                    data-placeholder="Select Category">
-
-
-                                                    <option selected value="مدرس قرآن">مدرس قرآن</option>
-
+                                                <select name="category" class="form-select @error('category') is-invalid @enderror" required>
+                                                    <option value="مدرس قرآن" selected>مدرس قرآن</option>
                                                 </select>
-
-
-
-
                                                 @error('category')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
+                                        </div>
 
-                                            {{-- --------------------------------------------------------------end Category-------------------------------------------------------------------- --}}
-
-
-
-                                            {{-- --------------------------------------------------------------  overview_ar-------------------------------------------------------------------- --}}
-                                            <div>
+                                        <!-- Overview (Arabic) -->
+                                        <div class="col-12">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Overview_ar') !!}</label>
-
-
-                                                <textarea class=" form-control" name="overview_ar" placeholder="اكتب هنا ">{{ old('overview_ar') }}</textarea>
-
-
-
-
+                                                <textarea class="form-control @error('overview_ar') is-invalid @enderror"
+                                                          name="overview_ar" rows="3" required>{{ old('overview_ar') }}</textarea>
                                                 @error('overview_ar')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
+                                        </div>
 
-                                            {{-- --------------------------------------------------------------end overview_ar-------------------------------------------------------------------- --}}
-
-                                            {{-- --------------------------------------------------------------  overview_en-------------------------------------------------------------------- --}}
-                                            <div>
-                                                <br>
+                                        <!-- Overview (English) -->
+                                        <div class="col-12">
+                                            <div class="form-group">
                                                 <label class="form-label">{!! __('admin.Overview_en') !!}</label>
-                                                <textarea class=" form-control" name="overview_en" placeholder="اكتب هنا ">{{ old('overview_en') }}</textarea>
-
-
-
+                                                <textarea class="form-control @error('overview_en') is-invalid @enderror"
+                                                          name="overview_en" rows="3" required>{{ old('overview_en') }}</textarea>
                                                 @error('overview_en')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                    <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
-
-
-
                                             </div>
-
-                                            {{-- --------------------------------------------------------------end overview_en-------------------------------------------------------------------- --}}
-
-                                            <br>
-                                            {{-- --------------------------------------------------------------  Item-------------------------------------------------------------------- --}}
-                                            <div>
-                                                <br>
-                                                <label class="form-label">{!! __('admin.Description') !!} </label>
-
-                                                <div class="row" id="row_item">
-
-
-
-
-                                                </div>
-
-
-                                                @error('Item')
-                                                    <br>
-                                                    <div class="alert alert-danger">{{ $message }}</div>
-                                                @enderror
-
-                                                <input class="btn btn-primary" onclick="additem()"
-                                                    value="{!! __('admin.Add Another Description') !!}">
-
-
-                                            </div>
-
-
-
-
-
-                                            <script>
-                                                additem()
-
-                                                function additem() {
-
-                                                    var item = ` <div class="  option-row1 row">
-<div class="mb-3 col-5 ">
-<label class="form-label">{!! __('admin.Title_ar') !!}</label>
-<input required type="text" id="form-repeater "   name="title_ar1[]" class="form-control" placeholder="Enter  " />
-</div>
-
-
-<div class="mb-3 col-5 ">
-<label class="form-label">{!! __('admin.Description_ar') !!}</label>
-<textarea class=" form-control" name="description_ar1[]" placeholder="اكتب هنا ">{{ old('description_ar1') }}</textarea>
-</div>
-
-
-<div class="mb-3 col-5 ">
-<label class="form-label">{!! __('admin.Title_en') !!}</label>
-<input required type="text" id="form-repeater "   name="title_en1[]" class="form-control" placeholder="Enter  " />
-</div>
-
-
-<div class="mb-3 col-5 ">
-<label class="form-label">{!! __('admin.Description_en') !!}</label>
-<textarea class=" form-control" name="description_en1[]" placeholder="اكتب هنا ">{{ old('description_en1') }}</textarea>
-</div>
-
-
-<div class="mb-3 col-2">
-<label class="form-label invisible" for="form-repeater-1-2">Not visible</label>
-
-<button type="button" class="btn btn-danger remove-option1">{!! __('admin.Delete') !!}</button>
-</div>
-</div>
-<hr>
-`;
-
-                                                    $('#row_item').append(item);
-
-                                                }
-                                                $(document).on('click', '.remove-option1', function() {
-                                                    $(this).closest('.option-row1').remove(); // حذف السطر بالكامل
-                                                });
-                                            </script>
-                                            {{-- --------------------------------------------------------------end item-------------------------------------------------------------------- --}}
-
-
-                                            <!-- Email -->
-                                            <div class="col-12 col-md-6">
-                                                <label class="form-label mb-0"
-                                                    for="email">{!! __('admin.Email') !!}</label>
-                                                <input type="email" class="form-control" id="email"
-                                                    value="{{ old('email') }}" placeholder="johndoe@gmail.com"
-                                                    name="email" aria-label="Email">
-                                            </div>
-
-
-
-                                            <!-- Password -->
-                                            <div class="col-12 col-md-6">
-                                                <label class="form-label mb-0"
-                                                    for="password">{!! __('admin.Password') !!}</label>
-                                                <input type="password" class="form-control" id="password"
-                                                    name="password" placeholder="Enter a new password"
-                                                    aria-label="Password">
-                                            </div>
-
-
-
-                                            <!-- Photo -->
-                                            <div class="col-12 col-md-12">
-                                                <label class="form-label mb-0"
-                                                    for="photo">{!! __('admin.Photo') !!}</label>
-                                                <input type="file" class="form-control" id="photo" name="photo"
-                                                    aria-label="Photo">
-                                                <br>
-
-                                            </div>
-
                                         </div>
 
-                                        <div class="d-flex justify-content-end gap-3">
-                                            <button type="submit"
-                                                class="btn btn-primary">{!! __('admin.Submit') !!}</button>
+                                        <!-- Dynamic Descriptions -->
+                                        <div class="col-12">
+                                            <label class="form-label">{!! __('admin.Description') !!}</label>
+                                            <div class="row" id="row_item">
+                                                <!-- Items will be added here dynamically -->
+                                            </div>
+                                            <button type="button" class="btn btn-primary mt-2" onclick="addItem()">
+                                                {!! __('admin.Add Another Description') !!}
+                                            </button>
                                         </div>
-                                    </form>
-                                </div>
+
+                                        <!-- Email -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">{!! __('admin.Email') !!}</label>
+                                                <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                                       value="{{ old('email') }}" name="email" required>
+                                                @error('email')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- Password -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">{!! __('admin.Password') !!}</label>
+                                                <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                                       name="password">
+                                                @error('password')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- Photo -->
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="form-label">{!! __('admin.Photo') !!}</label>
+                                                <input type="file" class="form-control @error('photo') is-invalid @enderror"
+                                                       name="photo" accept="image/*">
+                                                @error('photo')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-3">
+                                        <button type="submit" class="btn btn-primary">
+                                            {!! __('admin.Submit') !!}
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- /Options -->
-
             </div>
         </div>
     </div>
-    <!-- /Content wrapper -->
+</div>
 
-
-
-
-
-
-@endsection
-
-@section('footer')
-
+{{-- @section('footer') --}}
     <!-- Page JS -->
     <script src="{{ asset('admin') }}/js/app-ecommerce-settings.js"></script>
 
+    <script>
+        // Add initial item
+        addItem();
+
+        function addItem() {
+            var item = `
+            <div class="option-row1 row mb-3">
+                <div class="col-md-5">
+                    <label class="form-label">{!! __('admin.Title_ar') !!}</label>
+                    <input type="text" name="title_ar1[]" class="form-control" required>
+                </div>
+
+                <div class="col-md-5">
+                    <label class="form-label">{!! __('admin.Description_ar') !!}</label>
+                    <textarea class="form-control" name="description_ar1[]" rows="2" required></textarea>
+                </div>
+
+                <div class="col-md-5">
+                    <label class="form-label">{!! __('admin.Title_en') !!}</label>
+                    <input type="text" name="title_en1[]" class="form-control" required>
+                </div>
+
+                <div class="col-md-5">
+                    <label class="form-label">{!! __('admin.Description_en') !!}</label>
+                    <textarea class="form-control" name="description_en1[]" rows="2" required></textarea>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger remove-option1">
+                        {!! __('admin.Delete') !!}
+                    </button>
+                </div>
+            </div>
+            <hr>`;
+
+            $('#row_item').append(item);
+        }
+
+        $(document).on('click', '.remove-option1', function() {
+            $(this).closest('.option-row1').next('hr').remove();
+            $(this).closest('.option-row1').remove();
+        });
+    </script>
 @endsection
+
+{{-- @endsection --}}
