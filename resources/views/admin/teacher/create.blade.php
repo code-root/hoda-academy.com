@@ -1,7 +1,8 @@
 @extends('admin.layout.app')
-@section('page', 'Order List')
-@section('contant')
 
+@section('page', 'teacher List')
+
+@section('contant')
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row g-4">
@@ -31,7 +32,6 @@
 
                                 <form action="{{ route('teachers.store') }}" method="post" enctype="multipart/form-data">
                                     @csrf
-
                                     <div class="row mb-3 g-3">
                                         <!-- Arabic Name -->
                                         <div class="col-md-6">
@@ -44,7 +44,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- English Name -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -56,7 +55,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Meta Description (Arabic) -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -68,7 +66,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Meta Description (English) -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -80,7 +77,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Phone -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -92,7 +88,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Country -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -110,7 +105,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Category -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -123,7 +117,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Overview (Arabic) -->
                                         <div class="col-12">
                                             <div class="form-group">
@@ -135,7 +128,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Overview (English) -->
                                         <div class="col-12">
                                             <div class="form-group">
@@ -147,7 +139,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Dynamic Descriptions -->
                                         <div class="col-12">
                                             <label class="form-label">{!! __('admin.Description') !!}</label>
@@ -158,7 +149,6 @@
                                                 {!! __('admin.Add Another Description') !!}
                                             </button>
                                         </div>
-
                                         <!-- Email -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -170,7 +160,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Password -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -182,7 +171,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <!-- Photo -->
                                         <div class="col-12">
                                             <div class="form-group">
@@ -195,7 +183,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="d-flex justify-content-end gap-3">
                                         <button type="submit" class="btn btn-primary">
                                             {!! __('admin.Submit') !!}
@@ -210,54 +197,46 @@
         </div>
     </div>
 </div>
-
-{{-- @section('footer') --}}
-    <!-- Page JS -->
-    <script src="{{ asset('admin') }}/js/app-ecommerce-settings.js"></script>
-
-    <script>
-        // Add initial item
-        addItem();
-
-        function addItem() {
-            var item = `
-            <div class="option-row1 row mb-3">
-                <div class="col-md-5">
-                    <label class="form-label">{!! __('admin.Title_ar') !!}</label>
-                    <input type="text" name="title_ar1[]" class="form-control" required>
-                </div>
-
-                <div class="col-md-5">
-                    <label class="form-label">{!! __('admin.Description_ar') !!}</label>
-                    <textarea class="form-control" name="description_ar1[]" rows="2" required></textarea>
-                </div>
-
-                <div class="col-md-5">
-                    <label class="form-label">{!! __('admin.Title_en') !!}</label>
-                    <input type="text" name="title_en1[]" class="form-control" required>
-                </div>
-
-                <div class="col-md-5">
-                    <label class="form-label">{!! __('admin.Description_en') !!}</label>
-                    <textarea class="form-control" name="description_en1[]" rows="2" required></textarea>
-                </div>
-
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-danger remove-option1">
-                        {!! __('admin.Delete') !!}
-                    </button>
-                </div>
-            </div>
-            <hr>`;
-
-            $('#row_item').append(item);
-        }
-
-        $(document).on('click', '.remove-option1', function() {
-            $(this).closest('.option-row1').next('hr').remove();
-            $(this).closest('.option-row1').remove();
-        });
-    </script>
 @endsection
 
-{{-- @endsection --}}
+@section('footer')
+<script src="{{ asset('admin') }}/js/app-ecommerce-settings.js"></script>
+<script>
+    // Add initial item
+    addItem();
+
+    function addItem() {
+        var item = `
+        <div class="option-row1 row mb-3">
+            <div class="col-md-5">
+                <label class="form-label">{!! __('admin.Title_ar') !!}</label>
+                <input type="text" name="title_ar1[]" class="form-control" required>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">{!! __('admin.Description_ar') !!}</label>
+                <textarea class="form-control" name="description_ar1[]" rows="2" required></textarea>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">{!! __('admin.Title_en') !!}</label>
+                <input type="text" name="title_en1[]" class="form-control" required>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">{!! __('admin.Description_en') !!}</label>
+                <textarea class="form-control" name="description_en1[]" rows="2" required></textarea>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger remove-option1">
+                    {!! __('admin.Delete') !!}
+                </button>
+            </div>
+        </div>
+        <hr>`;
+        $('#row_item').append(item);
+    }
+
+    $(document).on('click', '.remove-option1', function() {
+        $(this).closest('.option-row1').next('hr').remove();
+        $(this).closest('.option-row1').remove();
+    });
+</script>
+@endsection

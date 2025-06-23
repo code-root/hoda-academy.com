@@ -25,7 +25,7 @@ class TeacherController extends Controller
 
     public function data()
     {
-        $customer = User::with('country:id,name','meeting') // إذا كنت تستخدم علاقة مع جدول الطلبات
+        $customer = User::with('country:id,name','meeting') 
 
         ->withCount('meeting')
 

@@ -34,20 +34,22 @@ class Blog extends Model
 
     public function setImageAttribute($value)
     {
-
-
+        // Handle multiple files (array of UploadedFile)
         if (is_array($value)) {
+            $paths = [];
             foreach ($value as $file) {
-                if (is_file($file) and !empty($file)) {
-                      self::update([
-                        $value[1] => $file->store('blog', 'blog'),
-                    ]);
+                if (is_file($file) && !empty($file)) {
+                    $paths[] = $file->store('blog', 'blog');
                 }
             }
-        }elseif (is_file($value)) {
-            $this->attributes[$value[1]] = $value->store('blog', 'blog');
+            // Store as JSON if multiple images
+            $this->attributes['image'] = json_encode($paths);
+        } elseif (is_file($value)) {
+            // Single file upload
+            $this->attributes['image'] = $value->store('blog', 'blog');
         } else {
-            $this->attributes[$value[1]] = $value;
+            // Existing path or string
+            $this->attributes['image'] = $value;
         }
     }
 

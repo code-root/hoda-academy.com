@@ -48,15 +48,13 @@ class BlogController extends Controller
 
     public function store(BlogRequest $request)
     {
+        try {
+            $blog = Blog::create($request->except('photo','title_ar1','title_en1','description_ar1','description_en1',));
+            if ($request->hasFile('photo')) {
+                $blog->setImageAttribute($request->file('photo'));
+                $blog->save();
+            }
 
-        $blog = Blog::create($request->except('photo','title_ar1','title_en1','description_ar1','description_en1',));
-        if ($request->hasFile('photo')) {
-
-            $blog->setImageAttribute([$request->file('photo'),'photo']);
-            $blog->save();
-        }
-
-#############################BlogDescription#########################################
 
 if (!empty($request->title_ar1)) {
 
@@ -75,14 +73,16 @@ if (!empty($request->title_ar1)) {
     }
     }
     #############################End BlogDescription#########################################
-        event(new SendMail($blog,'blog'));
+            event(new SendMail($blog,'blog'));
 
-
-
-    session()->flash('success', __('admin.Created Successfully'));
-    return redirect()->route('blog.index');
+            session()->flash('success', __('admin.Created Successfully'));
+            return redirect()->route('blog.index');
+        } catch (\Exception $e) {
+            // Log the error if needed
+            \Log::error('Blog Store Error: ' . $e->getMessage());
+            return back()->withErrors(['error' => __('حدث خطأ أثناء إضافة المدونة: ') . $e->getMessage()])->withInput();
+        }
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -100,35 +100,25 @@ if (!empty($request->title_ar1)) {
      */
     public function update(BlogRequest  $request,$id)
     {
-
-//   return$request;
-
-        $blog = Blog::findOrFail($id);
-        $blog->update($request->except('photo','title_ar1','title_en1','description_ar1','description_en1',));
-        if ($request->hasFile('photo')) {
-
-            if ($blog->photo) {
-                Storage::disk('blog')->delete($blog->photo);
+        try {
+            $blog = Blog::findOrFail($id);
+            $blog->update($request->except('photo','title_ar1','title_en1','description_ar1','description_en1',));
+            if ($request->hasFile('photo')) {
+                if ($blog->photo) {
+                    Storage::disk('blog')->delete($blog->photo);
+                }
+                $blog->setImageAttribute($request->file('photo'));
+                $blog->save();
             }
-            $blog->setImageAttribute([$request->file('photo')]);
-            $blog->save();
-        }
-
-
-#############################BlogDescription#########################################
-
-if (!empty($request->title_ar1)) {
-
-    BlogDescription::where('blog_id', $blog->id)->delete();
-    foreach ($request->title_ar1 as $key => $value) {
-
-
-        BlogDescription::create([
-            'blog_id'          => $blog->id,
-            'title_ar'          => $request->title_ar1[ $key],
-            'title_en'          => $request->title_en1[ $key],
-            'description_ar'          => $request->description_ar1[ $key],
-            'description_en'          => $request->description_en1[ $key],
+            if (!empty($request->title_ar1)) {
+                BlogDescription::where('blog_id', $blog->id)->delete();
+                foreach ($request->title_ar1 as $key => $value) {
+                    BlogDescription::create([
+                        'blog_id'          => $blog->id,
+                        'title_ar'          => $request->title_ar1[ $key],
+                        'title_en'          => $request->title_en1[ $key],
+                        'description_ar'          => $request->description_ar1[ $key],
+                        'description_en'          => $request->description_en1[ $key],
 
         ]);
     }
@@ -143,6 +133,10 @@ if (!empty($request->title_ar1)) {
 
     session()->flash('success',  __('admin.Updated Successfully'));
             return redirect()->route('blog.index');
+        } catch (\Exception $e) {
+            \Log::error('Blog Update Error: ' . $e->getMessage());
+            return back()->withErrors(['error' => __('حدث خطأ أثناء تحديث المدونة: ') . $e->getMessage()])->withInput();
+        }
     }
 
     /**
