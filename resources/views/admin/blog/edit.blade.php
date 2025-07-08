@@ -194,7 +194,7 @@
 
                                                      <div class="mb-3 col-5 ">
                                                          <label class="form-label">{!! __('admin.Description_ar') !!}</label>
-                                                         <textarea class=" form-control" name="description_ar1[]" placeholder="اكتب هنا ">{{ $item->description_ar }}</textarea>
+                                                         <textarea class=" form-control" name="description_ar1[]" placeholder="اكتب هنا ">{{ is_array(old('description_ar1')) ? '' : old('description_ar1') }}</textarea>
 
 
                                                      </div>
@@ -257,7 +257,7 @@
 
 <div class="mb-3 col-5 ">
 <label class="form-label">{!! __('admin.Description_ar') !!}</label>
-<textarea class=" form-control" name="description_ar1[]" placeholder="اكتب هنا ">{{ old('description_ar1') }}</textarea>
+<textarea class=" form-control" name="description_ar1[]" placeholder="اكتب هنا ">{{ is_array(old('description_ar1')) ? '' : old('description_ar1') }}</textarea>
 </div>
 
 
@@ -412,5 +412,51 @@
                  new Tagify($e[0]);
              }
          });
+     </script>
+
+     <script>
+     $(document).ready(function() {
+         $('form').on('submit', function(e) {
+             e.preventDefault();
+             var formData = new FormData(this);
+             var actionUrl = $(this).attr('action');
+             Swal.fire({
+                 title: 'جاري حفظ التعديلات...',
+                 allowOutsideClick: false,
+                 didOpen: () => { Swal.showLoading(); }
+             });
+             $.ajax({
+                 url: actionUrl,
+                 type: 'POST',
+                 data: formData,
+                 processData: false,
+                 contentType: false,
+                 success: function(response) {
+                     Swal.fire({
+                         icon: 'success',
+                         title: 'تم حفظ التعديلات بنجاح!',
+                         text: 'تم تحديث بيانات المقالة بنجاح. يمكنك المتابعة أو العودة لقائمة المقالات.',
+                         confirmButtonText: 'حسنًا'
+                     });
+                 },
+                 error: function(xhr) {
+                     let msg = 'حدث خطأ غير متوقع، يرجى المحاولة لاحقًا.';
+                     let title = 'خطأ!';
+                     if(xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                         msg = Object.values(xhr.responseJSON.errors).join('<br>');
+                         title = 'هناك أخطاء في البيانات:';
+                     } else if(xhr.responseJSON && xhr.responseJSON.message) {
+                         msg = xhr.responseJSON.message;
+                     }
+                     Swal.fire({
+                         icon: 'error',
+                         title: title,
+                         html: msg,
+                         confirmButtonText: 'إغلاق'
+                     });
+                 }
+             });
+         });
+     });
      </script>
  @endsection
