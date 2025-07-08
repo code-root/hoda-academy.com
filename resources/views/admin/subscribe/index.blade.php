@@ -3,7 +3,7 @@
 @section('page', 'home')
 
 
-@section('contant')
+@section('content')
 
 
 

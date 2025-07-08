@@ -1,9 +1,6 @@
 @extends('admin.layout.app')
-
 @section('page', 'Edit Rating')
-
 @section('content')
-
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -42,12 +39,12 @@
                                 <!-- Name Field -->
                                 <div class="mb-3">
                                     <label class="form-label">{{ __('admin.Name') }} *</label>
-                                    <input type="text" class="form-control" required
-                                           id="rating-name" value="{{ $rateing->name }}"
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" required
+                                           id="rating-name" value="{{ old('name', $rateing->name) }}"
                                            placeholder="{{ __('admin.Name') }}" name="name"
                                            aria-label="Rating name">
                                     @error('name')
-                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <!-- End Name Field -->
@@ -55,11 +52,11 @@
                                 <!-- Review Field -->
                                 <div class="mb-3">
                                     <label class="form-label">{{ __('admin.Review') }}</label>
-                                    <textarea class="form-control" name="review"
+                                    <textarea class="form-control @error('review') is-invalid @enderror" name="review"
                                               placeholder="{{ __('admin.Write your review here') }}"
-                                              rows="3">{{ $rateing->review }}</textarea>
+                                              rows="3">{{ old('review', $rateing->review) }}</textarea>
                                     @error('review')
-                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <!-- End Review Field -->
@@ -67,13 +64,13 @@
                                 <!-- Rating Field -->
                                 <div class="mb-3">
                                     <label class="form-label">{{ __('admin.Rating') }} *</label>
-                                    <input type="number" class="form-control" required
-                                           id="rating-value" value="{{ $rateing->rate }}"
+                                    <input type="number" class="form-control @error('rate') is-invalid @enderror" required
+                                           id="rating-value" value="{{ old('rate', $rateing->rate) }}"
                                            placeholder="{{ __('admin.Enter rating (1-5)') }}"
                                            name="rate" min="1" max="5"
                                            aria-label="Rating value">
                                     @error('rate')
-                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <!-- End Rating Field -->
@@ -86,9 +83,9 @@
                                     </div>
                                     <input type="file" name="photo"
                                            onchange="readURL(this);"
-                                           class="form-control">
+                                           class="form-control @error('photo') is-invalid @enderror">
                                     @error('photo')
-                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
 
                                     <!-- Current Photo Preview -->
@@ -96,12 +93,19 @@
                                         <label class="form-label">{{ __('admin.Current Photo') }}:</label>
                                         <div class="row last">
                                             <div class="col-md-3 mb-3 position-relative">
-                                                <a target="_blank" href="{{ asset('images') }}/{{ $rateing->photo }}">
-                                                    <img id="photo-preview"
-                                                         style="width: 100%; height: auto; padding: 5px; border: 1px solid #ddd; border-radius: 4px;"
-                                                         src="{{ asset('images') }}/{{ $rateing->photo }}"
-                                                         alt="{{ __('admin.Current rating photo') }}">
-                                                </a>
+                                                @if($rateing->photo)
+                                                    <a target="_blank" href="/images/{{ $rateing->photo }}">
+                                                        <img id="photo-preview"
+                                                             style="width: 100%; height: auto; padding: 5px; border: 1px solid #ddd; border-radius: 4px;"
+                                                             src="/images/{{ $rateing->photo }}"
+                                                             alt="{{ __('admin.Current rating photo') }}">
+                                                    </a>
+                                                @else
+                                                    <div class="text-center p-3 border rounded">
+                                                        <i class="bx bx-image text-muted" style="font-size: 2rem;"></i>
+                                                        <p class="text-muted mt-2">{{ __('admin.No photo uploaded') }}</p>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -110,6 +114,9 @@
 
                                 <!-- Submit Button -->
                                 <div class="d-flex justify-content-end">
+                                    <a href="{{ route('rateing.index') }}" class="btn btn-secondary me-2">
+                                        <i class="bx bx-arrow-back me-1"></i> {{ __('admin.Cancel') }}
+                                    </a>
                                     <button type="submit" class="btn btn-primary">
                                         <i class="bx bx-save me-1"></i> {{ __('admin.Update Rating') }}
                                     </button>

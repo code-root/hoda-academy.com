@@ -183,7 +183,7 @@
 
 
 
-@yield('contant')
+@yield('content')
 
 <!-- Footer -->
 <footer class="content-footer footer bg-footer-theme">

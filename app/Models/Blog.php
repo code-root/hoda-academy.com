@@ -23,8 +23,6 @@ class Blog extends Model
                 $blog->slug_en = Str::slug($blog->title_en . '-' . $blog->id);
             } else {
                 $blog->slug_ar = str_replace(' ', '-', $blog->title_ar) . '-' . $blog->id;
-
-
                 $blog->slug_en = Str::slug($blog->title_en . '-' . $blog->id);
             }
         });
@@ -32,7 +30,7 @@ class Blog extends Model
 
 
 
-    public function setImageAttribute($value)
+    public function setPhotoAttribute($value)
     {
         // Handle multiple files (array of UploadedFile)
         if (is_array($value)) {
@@ -43,13 +41,13 @@ class Blog extends Model
                 }
             }
             // Store as JSON if multiple images
-            $this->attributes['image'] = json_encode($paths);
+            $this->attributes['photo'] = json_encode($paths);
         } elseif (is_file($value)) {
             // Single file upload
-            $this->attributes['image'] = $value->store('blog', 'blog');
+            $this->attributes['photo'] = $value->store('blog', 'blog');
         } else {
             // Existing path or string
-            $this->attributes['image'] = $value;
+            $this->attributes['photo'] = $value;
         }
     }
 

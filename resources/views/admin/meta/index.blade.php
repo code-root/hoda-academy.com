@@ -3,7 +3,7 @@
 @section('page', 'Order List')
 
 
-@section('contant')
+@section('content')
 
 
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RateingRequest;
 use App\Models\Rateing;
-use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -13,27 +12,35 @@ class RateingController extends Controller
 {
     public function index()
     {
-
-
         return view('admin.rateing.index');
     }
 
-
     public function data()
     {
-        $rateing = Rateing::orderBy('created_at', 'desc')->get() ;
+        $rateings = Rateing::orderBy('created_at', 'desc')->get();
 
-        return DataTables::of($rateing)
-
+        return DataTables::of($rateings)
+            ->addColumn('name', function ($rateing) {
+                return $rateing->name;
+            })
+            ->addColumn('review', function ($rateing) {
+                return $rateing->review ?? '';
+            })
+            ->addColumn('rate', function ($rateing) {
+                return $rateing->rate;
+            })
+            ->addColumn('photo', function ($rateing) {
+                return $rateing->photo;
+            })
             ->make(true);
     }
+
     /**
-     * Show the form for crateing a new resource.
+     * Show the form for creating a new resource.
      */
     public function create()
     {
         return view('admin.rateing.create');
-
     }
 
     /**
@@ -41,58 +48,57 @@ class RateingController extends Controller
      */
     public function store(RateingRequest $request)
     {
+        try {
+            $rateing = Rateing::create($request->except('photo'));
+            
+            if ($request->hasFile('photo')) {
+                $rateing->setImageAttribute([$request->file('photo'), 'photo']);
+                $rateing->save();
+            }
 
-
-
-        $rateing = Rateing::create($request->all());
-        if ($request->hasFile('photo')) {
-
-            $rateing->setImageAttribute([$request->file('photo'),'photo']);
-            $rateing->save();
+            session()->flash('success', __('admin.Created Successfully'));
+            return redirect()->route('rateing.index');
+        } catch (\Exception $e) {
+            session()->flash('error', __('admin.Error occurred while creating rating'));
+            return redirect()->back()->withInput();
         }
-
-
-
-
-        session()->flash('success', __('admin.Created Successfully'));
-        return redirect()->route('rateing.index');
-
-
-
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit( $id)
+    public function edit($id)
     {
-
         $rateing = Rateing::findOrFail($id);
-        return view('admin.rateing.edit',get_defined_vars());
-
+        return view('admin.rateing.edit', compact('rateing'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(RateingRequest  $request,$id)
+    public function update(RateingRequest $request, $id)
     {
-        $rateing = Rateing::findOrFail($id);
-
-        $rateing->update($request->except('photo'));
-        if ($request->hasFile('photo')) {
+        try {
             $rateing = Rateing::findOrFail($id);
-
-            if ($rateing->photo) {
-                Storage::disk('rateing')->delete($rateing->photo);
+            
+            $rateing->update($request->except('photo'));
+            
+            if ($request->hasFile('photo')) {
+                // Delete old photo if exists
+                if ($rateing->photo) {
+                    Storage::disk('rateing')->delete($rateing->photo);
+                }
+                
+                $rateing->setImageAttribute([$request->file('photo'), 'photo']);
+                $rateing->save();
             }
-            $rateing->setImageAttribute([$request->file('photo'),'photo']);
-            $rateing->save();
+
+            session()->flash('success', __('admin.Updated Successfully'));
+            return redirect()->route('rateing.index');
+        } catch (\Exception $e) {
+            session()->flash('error', __('admin.Error occurred while updating rating'));
+            return redirect()->back()->withInput();
         }
-
-
-        session()->flash('success',  __('admin.Updated Successfully'));
-        return redirect()->route('rateing.index');
     }
 
     /**
@@ -100,22 +106,24 @@ class RateingController extends Controller
      */
     public function destroy(Request $request)
     {
-        $ex = explode(',', $request->id);
+        try {
+            $ex = explode(',', $request->id);
 
+            foreach ($ex as $value) {
+                $rateing = Rateing::findOrFail($value);
+                
+                if ($rateing->photo) {
+                    Storage::disk('rateing')->delete($rateing->photo);
+                }
+                
+                $rateing->delete();
+            }
 
-
-foreach ($ex as $key => $value) {
-    $rateing = Rateing::findOrFail($value);
-    if ($rateing->photo) {
-        Storage::disk('rateing')->delete($rateing->photo);
-    }
-    $rateing->delete();
-}
-
-
-
-session()->flash('success', __('admin.Deleted Successfully'));
-
-        return redirect()->route('rateing.index');
+            session()->flash('success', __('admin.Deleted Successfully'));
+            return redirect()->route('rateing.index');
+        } catch (\Exception $e) {
+            session()->flash('error', __('admin.Error occurred while deleting rating'));
+            return redirect()->back();
+        }
     }
 }

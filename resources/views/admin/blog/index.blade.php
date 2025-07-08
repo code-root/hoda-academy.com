@@ -2,21 +2,13 @@
 
 @section('page', 'blog')
 
-
-@section('contant')
-
-
-
-
+@section('content')
 
     <!-- Content wrapper -->
     <div class="content-wrapper">
 
         <!-- Content -->
-
         <div class="container-xxl flex-grow-1 container-p-y">
-
-
 
             <!-- blog List Table -->
             <div class="card">
@@ -24,9 +16,7 @@
                     <h5 class="card-title">{!! __('admin.Blogs') !!}</h5>
                     <div class="d-flex justify-content-between align-items-center row py-3 gap-3 gap-md-0">
 
-
                         {{-- --------------------------------------------------------------Alert-------------------------------------------------------------------- --}}
-
 
                         @if (session('success'))
                             <div id="success-message" class="alert alert-success alert-dismissible fade show text-center"
@@ -42,12 +32,9 @@
                             </div>
                         @endif
 
-
-
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
-                                    {{-- @dd($errors) --}}
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
@@ -56,34 +43,19 @@
                         @endif
                         {{-- --------------------------------------------------------------End Alert-------------------------------------------------------------------- --}}
 
-
                     </div>
-
                 </div>
 
                 <div class="card-datatable table-responsive">
-
-
                     <table id="blogs-table" class="datatables-blogs table border-top dataTable no-footer dtr-column"
                         style="width: 1211px;">
                         <thead>
-
-
-
-
-
                             <tr>
                                 <th></th>
                                 <th></th>
                                 <th>{!! __('admin.Blogs') !!} </th>
                                 <th>{!! __('admin.User') !!}</th>
-
-
                                 <th class="text-lg-center">{!! __('admin.Actions') !!}</th>
-                            </tr>
-
-
-
                             </tr>
                         </thead>
                     </table>
@@ -91,79 +63,39 @@
                 <br>
                 <br>
             </div>
-
         </div>
         <!-- / Content -->
 
-
-
-
-
-
-
-
-
-
         <script>
             $(document).ready(function() {
-
-                var o = {
-
-                        1: {
-                            title: "{!! __('admin.Publish') !!}",
-                            class: "bg-label-success"
-                        },
-                        2: {
-                            title: "{!! __('admin.Scheduled') !!}",
-                            class: "bg-label-warning"
-                        },
-                        3: {
-                            title: "{!! __('admin.Inactive') !!}",
-                            class: "bg-label-danger"
-                        }
-                    },
-                    i = {
-                        0: {
-                            title: "{!! __('admin.Out_of_Stock') !!}"
-                        },
-                        1: {
-                            title: "{!! __('admin.In_Stock') !!}"
-                        }
-                    };
                 $('#blogs-table').DataTable({
                     processing: true,
-
-                    ajax: '{{ route('blog.data') }}',
+                    ajax: {
+                        url: '{{ route('blog.data') }}',
+                        error: function (xhr, error, thrown) {
+                            console.error('DataTables error:', error);
+                            console.error('Server response:', xhr.responseText);
+                        }
+                    },
                     columns: [{
-                                data: "id"
-                            },
-
-
-                            {
-                                data: "title_ar"
-                            },
-                            {
-                                data: "quantity"
-                            },
-
-
-
-                            {
-                                data: " "
-                            },
-
-
-
-
-                            {
-                                data: 'action',
-                                name: 'action',
-                                orderable: false,
-                                searchable: false
-                            }
-                        ]
-
-                        ,
+                            data: "id"
+                        },
+                        {
+                            data: "id"
+                        },
+                        {
+                            data: "title"
+                        },
+                        {
+                            data: "user"
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ],
                     columnDefs: [{
                             className: "control",
                             searchable: !1,
@@ -171,7 +103,6 @@
                             responsivePriority: 2,
                             targets: 0,
                             render: function(t, e, s, a) {
-
                                 return ""
                             }
                         }, {
@@ -185,143 +116,83 @@
                                     '" onclick="data(`dt-checkboxes`)" class="dt-checkboxes form-check-input" >'
                             },
                             searchable: !1
-                        }
-
-                        ///////////2////////////
-                        //     , {
-                        //         targets: 2,
-                        //         responsivePriority: 1,
-                        //         render: function(t, e, s, a) {
-
-                        // // console.log(s)
-
-
-
-                        //             var n = s.id;
-                        //             return n;
-
-                        //         }
-                        //     }
-
-                        ////////////2//////////////
-                        ///////////2////////////
-                        , {
+                        }, {
                             targets: 2,
                             responsivePriority: 1,
                             render: function(t, e, s, a) {
-
-
-                                @if (App::isLocale('en'))
-                                    var title = s.title_en;
-                                @else
-                                    var title = s.title_ar;
-                                @endif
-                                if (s.photo != null) {
-                                    var photo = s.photo;
+                                var title = s.title || s.title_ar || s.title_en || 'Untitled';
+                                var photo = s.photo || 'no-image.png';
+                                
+                                var list = '<div class="d-flex justify-content-start align-items-center blog-name">' +
+                                    '<div class="avatar-wrapper">' +
+                                    '<div class="avatar avatar me-2 rounded-2 bg-label-secondary">';
+                                
+                                if (s.photo) {
+                                    list += '<img src="/images/' + photo + '" class="rounded-2" style="width: 40px; height: 40px; object-fit: cover;">';
                                 } else {
-                                    var photo = 'no-image.png';
+                                    var initial = title && title.length > 0 ? title.charAt(0).toUpperCase() : 'B';
+                                    list += '<span class="avatar-initial rounded-2">' + initial + '</span>';
                                 }
-                                var list =
-                                    '<div class="d-flex justify-content-start align-items-center blog-name"><div class="avatar-wrapper"><div class="avatar avatar me-2 rounded-2 bg-label-secondary"><img src="{{ asset('images') }}/' +
-                                    photo +
-                                    '"   class="rounded-2"></div></div><div class="d-flex flex-column"><h6 class="text-body text-nowrap mb-0">' +
-                                    title + '</h6> </div></div>';
-
-
+                                
+                                list += '</div></div>' +
+                                    '<div class="d-flex flex-column">' +
+                                    '<h6 class="text-body text-nowrap mb-0">' + title + '</h6>' +
+                                    '</div></div>';
 
                                 return list;
-
                             }
-                        }
-
-                        ////////////2//////////////
-
-
-                        ///////////3////////////
-                        , {
+                        }, {
                             targets: 3,
                             responsivePriority: 1,
                             render: function(t, e, s, a) {
-                                @if (App::isLocale('en'))
-                                    var customerName = s.user.name_en;
-                                @else
-                                    var customerName = s.user.name_ar;
-                                @endif
+                                var customerName = 'Unknown';
+                                var userEmail = '';
+                                
+                                if (s.user) {
+                                    customerName = s.user.name_en || s.user.name_ar || 'Unknown';
+                                    userEmail = s.user.email || '';
+                                }
 
-
-                                var initials = customerName.split(' ').map(name => name[0]).join('');
-                                var colors = ['success', 'danger', 'warning', 'info', 'dark', 'primary',
-                                    'secondary'
-                                ];
-
+                                var initials = customerName && customerName.length > 0 ? customerName.split(' ').map(name => name[0]).join('') : 'U';
+                                var colors = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
                                 var randomColor = colors[Math.floor(Math.random() * colors.length)];
 
-                                var list = `
-<div class="d-flex justify-content-start align-items-center customer-name">
-<div class="avatar-wrapper">
-
-<div class="avatar-wrapper">
-<div class="avatar me-2">
-<span class="avatar-initial rounded-circle bg-label-${randomColor}">${initials}</span>
-</div>
-</div>
-
-</div>
-
-<div class="d-flex flex-column">
-<a href="{{ route('customer.show', '') }}/` + s.user.id + `">
-<span class="fw-medium">${customerName}</span>
-</a>
-<small class="text-muted text-nowrap">${s.user.email}</small>
-</div>
-</div>`;
+                                var list = '<div class="d-flex justify-content-start align-items-center customer-name">' +
+                                    '<div class="avatar-wrapper">' +
+                                    '<div class="avatar me-2">' +
+                                    '<span class="avatar-initial rounded-circle bg-label-' + randomColor + '">' + initials + '</span>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="d-flex flex-column">' +
+                                    '<span class="fw-medium">' + customerName + '</span>' +
+                                    '<small class="text-muted text-nowrap">' + userEmail + '</small>' +
+                                    '</div>' +
+                                    '</div>';
 
                                 return list;
-
-
                             }
-                        }
-
-
-                        ////////////3//////////////
-
-
-
-                        ///////////4////////////
-                        , {
+                        }, {
                             targets: 4,
                             responsivePriority: 1,
                             render: function(t, e, s, a) {
-                                return `
-                                        <div class="d-flex align-items-sm-center justify-content-sm-center">
-                                            <a href="blog/${s.id}/edit">
-
-                                                <i class="bx bx-edit"></i>
-
-                                            </a>
-                                        </div>`;
-
-
+                                var title = s.title || s.title_ar || s.title_en || 'Untitled';
+                                return '<div class="d-flex align-items-sm-center justify-content-sm-center">' +
+                                    '<a href="blog/' + s.id + '/edit" class="btn btn-sm btn-icon btn-outline-primary me-1">' +
+                                    '<i class="bx bx-edit"></i>' +
+                                    '</a>' +
+                                    '<button class="btn btn-sm btn-icon btn-outline-danger delete-btn" ' +
+                                    'data-id="' + s.id + '" ' +
+                                    'data-title="' + title + '">' +
+                                    '<i class="bx bx-trash"></i>' +
+                                    '</button>' +
+                                    '</div>';
                             }
-                        }
-
-
-                        ////////////4//////////////
-
-
-
-
-
-                        , {
+                        }, {
                             targets: -1,
-
                             searchable: !1,
                             orderable: !1,
-
                         }
-
                     ],
-
                     order: [2, "desc"],
                     dom: '<"card-header d-flex border-top rounded-0 flex-wrap py-md-0"<"me-5 ms-n2 pe-5"f><"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex align-items-start align-items-md-center justify-content-sm-center mb-3 mb-sm-0"lB>>>t<"row mx-2"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
                     lengthMenu: [10, 20, 50, 70, 100],
@@ -343,7 +214,6 @@
                         {
                             text: '<i class="bx bx-plus me-0 me-sm-1"></i>{!! __('admin.Add Blogs') !!} ',
                             className: "add-new btn btn-primary ms-2",
-
                             action: function() {
                                 window.location.href = "{{ route('blog.create') }}"
                             }
@@ -353,7 +223,7 @@
                         details: {
                             display: $.fn.dataTable.Responsive.display.modal({
                                 header: function(t) {
-                                    return "Details of " + t.data().name
+                                    return "Details of " + t.data().title
                                 }
                             }),
                             type: "column",
@@ -367,23 +237,20 @@
                             }
                         }
                     },
+                });
 
+                // Handle delete button clicks
+                $(document).on('click', '.delete-btn', function() {
+                    const id = $(this).data('id');
+                    const title = $(this).data('title') || 'هذه المقالة';
+                    
+                    if (confirm('هل أنت متأكد من حذف المقالة: ' + title + '؟')) {
+                        $('.val').val(id);
+                        $('#basicModal2').modal('show');
+                    }
                 });
             });
-
-
-            //     function edit(id){
-            //       $('#edit').val(id);
-
-            //     }
-
-            // $('#EditModel').on('show', function (event) {
-            //       console.log(event)
-            //     });
         </script>
-
-
-
 
         {{-- -------------------------------------------------------------- Delete-------------------------------------------------------------------- --}}
 
@@ -400,16 +267,10 @@
                                 @method('delete')
                                 @csrf
                                 <div id="name" class=" col mb-3">
-
-
                                     {!! __('admin.Are you sure you want to delete?') !!}
                                 </div>
                                 <input class="val" type="hidden" name="id">
-
-
                         </div>
-
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary"
@@ -422,13 +283,7 @@
         </div>
         {{-- --------------------------------------------------------------end Delete-------------------------------------------------------------------- --}}
 
-
-
-
-
     @endsection
-
-
 
     @section('footer')
 

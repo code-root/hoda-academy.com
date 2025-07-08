@@ -54,7 +54,7 @@ return [
         'rateing' => [
             'driver' => 'local',
             'root' => 'images',
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL').'/storage/rateing',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -104,6 +104,7 @@ return [
             'driver' => 'local',
             'root' => 'images',
             'url' => env('APP_URL').'/storage',
+
             'visibility' => 'public',
             'throw' => false,
         ],

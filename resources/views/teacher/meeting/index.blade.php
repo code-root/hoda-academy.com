@@ -3,7 +3,7 @@
 @section('page', 'Teacher')
 
 
-@section('contant')
+@section('content')
 
 
 

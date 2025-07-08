@@ -1,6 +1,6 @@
 @extends('teacher.customer.app')
 
-@section('contant1')
+@section('content1')
     <!-- Change Password -->
     <div class="card mb-4">
         <h5 class="card-header">{!! __('admin.Change Password') !!}</h5>

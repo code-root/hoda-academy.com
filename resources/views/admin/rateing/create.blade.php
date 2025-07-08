@@ -32,12 +32,12 @@
                                 <!-- Name Field -->
                                 <div class="mb-3">
                                     <label class="form-label">{{ __('admin.Name') }} *</label>
-                                    <input type="text" class="form-control" required
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" required
                                            id="rating-name" value="{{ old('name') }}"
                                            placeholder="{{ __('admin.Enter name') }}"
                                            name="name" aria-label="Rating name">
                                     @error('name')
-                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <!-- End Name Field -->
@@ -45,10 +45,10 @@
                                 <!-- Review Field -->
                                 <div class="mb-3">
                                     <label class="form-label">{{ __('admin.Review') }}</label>
-                                    <textarea class="form-control" name="review" rows="3"
+                                    <textarea class="form-control @error('review') is-invalid @enderror" name="review" rows="3"
                                               placeholder="{{ __('admin.Write your review here') }}">{{ old('review') }}</textarea>
                                     @error('review')
-                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <!-- End Review Field -->
@@ -56,14 +56,14 @@
                                 <!-- Rating Value Field -->
                                 <div class="mb-3">
                                     <label class="form-label">{{ __('admin.Rating') }} (1-5) *</label>
-                                    <input type="number" class="form-control" required
+                                    <input type="number" class="form-control @error('rate') is-invalid @enderror" required
                                            id="rating-value" value="{{ old('rate') }}"
                                            placeholder="{{ __('admin.Enter rating value') }}"
                                            name="rate" min="1" max="5"
                                            aria-label="Rating value">
                                     <small class="text-muted">{{ __('admin.Please enter a value between 1 and 5') }}</small>
                                     @error('rate')
-                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <!-- End Rating Value Field -->
@@ -76,9 +76,9 @@
                                     </div>
                                     <input type="file" name="photo"
                                            onchange="readURL(this);"
-                                           class="form-control">
+                                           class="form-control @error('photo') is-invalid @enderror">
                                     @error('photo')
-                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
 
                                     <!-- Photo Preview Area -->
@@ -97,6 +97,9 @@
 
                                 <!-- Form Actions -->
                                 <div class="d-flex justify-content-end">
+                                    <a href="{{ route('rateing.index') }}" class="btn btn-secondary me-2">
+                                        <i class="bx bx-arrow-back me-1"></i> {{ __('admin.Cancel') }}
+                                    </a>
                                     <button type="submit" class="btn btn-primary">
                                         <i class="bx bx-plus me-1"></i> {{ __('admin.Create Rating') }}
                                     </button>

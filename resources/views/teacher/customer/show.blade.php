@@ -1,6 +1,6 @@
    @extends('teacher.customer.app')
 
-   @section('contant1')
+   @section('content1')
        <!-- Invoice table -->
        <div class="card mb-4">
            <div class="table-responsive mb-3">

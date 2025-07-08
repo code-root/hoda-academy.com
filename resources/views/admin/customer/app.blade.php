@@ -3,7 +3,7 @@
 @section('page', 'Order List')
 
 
-@section('contant')
+@section('content')
 
     <!-- Content wrapper -->
     <div class="content-wrapper">
@@ -214,7 +214,7 @@
 
 
 
-                    @yield('contant1')
+                    @yield('content1')
 
 
                 </div>

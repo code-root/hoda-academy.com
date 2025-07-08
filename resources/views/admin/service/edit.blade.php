@@ -3,7 +3,7 @@
  @section('page', 'Create Product')
 
 
- @section('contant')
+ @section('content')
 
 
 

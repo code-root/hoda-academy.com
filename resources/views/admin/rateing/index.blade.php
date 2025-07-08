@@ -2,21 +2,13 @@
 
 @section('page', 'home')
 
-
-@section('contant')
-
-
-
-
+@section('content')
 
     <!-- Content wrapper -->
     <div class="content-wrapper">
 
         <!-- Content -->
-
         <div class="container-xxl flex-grow-1 container-p-y">
-
-
 
             <!-- Product List Table -->
             <div class="card">
@@ -24,9 +16,7 @@
                     <h5 class="card-title"> {!! __('admin.Rateing') !!}</h5>
                     <div class="d-flex justify-content-between align-items-center row py-3 gap-3 gap-md-0">
 
-
                         {{-- --------------------------------------------------------------Alert-------------------------------------------------------------------- --}}
-
 
                         @if (session('success'))
                             <div id="success-message" class="alert alert-success alert-dismissible fade show text-center"
@@ -42,12 +32,9 @@
                             </div>
                         @endif
 
-
-
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
-                                    {{-- @dd($errors) --}}
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
@@ -56,34 +43,21 @@
                         @endif
                         {{-- --------------------------------------------------------------End Alert-------------------------------------------------------------------- --}}
 
-
                     </div>
-
                 </div>
 
                 <div class="card-datatable table-responsive">
-
-
                     <table id="products-table" class="datatables-products table border-top dataTable no-footer dtr-column"
                         style="width: 1211px;">
                         <thead>
-
-
-
-
-
                             <tr>
                                 <th></th>
                                 <th></th>
-                                <th>{!! __('admin.Rateing') !!}</th>
-
-
-
+                                <th>{!! __('admin.Name') !!}</th>
+                                <th>{!! __('admin.Review') !!}</th>
+                                <th>{!! __('admin.Rating') !!}</th>
+                                <th>{!! __('admin.Photo') !!}</th>
                                 <th class="text-lg-center">{!! __('admin.Actions') !!}</th>
-                            </tr>
-
-
-
                             </tr>
                         </thead>
                     </table>
@@ -91,53 +65,39 @@
                 <br>
                 <br>
             </div>
-
         </div>
         <!-- / Content -->
 
-
-
-
-
-
-
-
-
-
         <script>
             $(document).ready(function() {
-
-
                 $('#products-table').DataTable({
                     processing: true,
-
                     ajax: '{{ route('rateing.data') }}',
                     columns: [{
-                                data: "id"
-                            },
-
-
-                            {
-                                data: "photo"
-                            },
-
-
-                            {
-                                data: " "
-                            },
-
-
-
-
-                            {
-                                data: 'action',
-                                name: 'action',
-                                orderable: false,
-                                searchable: false
-                            }
-                        ]
-
-                        ,
+                            data: "id"
+                        },
+                        {
+                            data: "id"
+                        },
+                        {
+                            data: "name"
+                        },
+                        {
+                            data: "review"
+                        },
+                        {
+                            data: "rate"
+                        },
+                        {
+                            data: "photo"
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ],
                     columnDefs: [{
                             className: "control",
                             searchable: !1,
@@ -145,7 +105,6 @@
                             responsivePriority: 2,
                             targets: 0,
                             render: function(t, e, s, a) {
-
                                 return ""
                             }
                         }, {
@@ -159,111 +118,85 @@
                                     '" onclick="data(`dt-checkboxes`)" class="dt-checkboxes form-check-input" >'
                             },
                             searchable: !1
-                        }
-
-                        ///////////2////////////
-                        //     , {
-                        //         targets: 2,
-                        //         responsivePriority: 1,
-                        //         render: function(t, e, s, a) {
-
-                        // // console.log(s)
-
-
-
-                        //             var n = s.id;
-                        //             return n;
-
-                        //         }
-                        //     }
-
-                        ////////////2//////////////
-                        ///////////2////////////
-                        , {
+                        }, {
                             targets: 2,
                             responsivePriority: 1,
                             render: function(t, e, s, a) {
-                                // التحقق من وجود الصورة
-                                if (s.photo != null) {
-                                    var photo = s.photo;
-                                } else {
-                                    var photo = 'no-image.png';
-                                }
-
-
-                                // بناء العنصر النهائي
-                                var list =
-                                    '<div class="d-flex justify-content-start align-items-center product-name">' +
+                                return '<div class="d-flex justify-content-start align-items-center product-name">' +
                                     '<div class="avatar-wrapper">' +
                                     '<div class="avatar avatar me-2 rounded-2 bg-label-secondary">' +
-                                    '<img src="{{ asset('images') }}/' + photo +
-                                    '" class="rounded-2">' +
+                                    '<span class="avatar-initial rounded-2">' + s.name.charAt(0).toUpperCase() + '</span>' +
                                     '</div>' +
                                     '</div>' +
-
+                                    '<div class="d-flex flex-column">' +
+                                    '<h6 class="mb-0 text-body">' + s.name + '</h6>' +
                                     '</div>' +
                                     '</div>';
-
-                                return list;
                             }
-                        }
-
-
-                        ////////////2//////////////
-
-
-                        ///////////3////////////
-                        , {
+                        }, {
                             targets: 3,
                             responsivePriority: 1,
                             render: function(t, e, s, a) {
-                                return `
-                                        <div class="d-flex align-items-sm-center justify-content-sm-center">
-                                            <a href="rateing/${s.id}/edit">
-
-                                                <i class="bx bx-edit"></i>
-
-                                            </a>
-                                        </div>`;
-
-
-                                //             return `
-                        // <div class="d-flex align-items-sm-center justify-content-sm-center">
-                        //     <button id="edit" class="btn btn-sm btn-icon"
-                        //         data-id="${s.id}"
-                        //         data-title_ar="${s.title_ar}"
-                        //         data-title_en="${s.title_en}"
-                        //         data-descrition_ar="${s.descrition_ar}"
-                        //         data-descrition_en="${s.descrition_en}"
-                        //         data-photo="${s.photo}"
-
-                        //         aria-controls="products-table"
-                        //         type="button"
-                        //         data-bs-toggle="modal"
-                        //         data-bs-target="#EditModal1">
-                        //         <i class="bx bx-edit"></i>
-                        //     </button>
-                        // </div>`;
+                                return s.review ? s.review.substring(0, 50) + (s.review.length > 50 ? '...' : '') : '-';
                             }
-                        }
-
-
-                        ////////////3//////////////
-
-
-
-
-
-                        , {
+                        }, {
+                            targets: 4,
+                            responsivePriority: 1,
+                            render: function(t, e, s, a) {
+                                let stars = '';
+                                for (let i = 1; i <= 5; i++) {
+                                    if (i <= s.rate) {
+                                        stars += '<i class="bx bxs-star text-warning"></i>';
+                                    } else {
+                                        stars += '<i class="bx bx-star text-muted"></i>';
+                                    }
+                                }
+                                return '<div class="d-flex align-items-center">' + stars + ' <span class="ms-1">(' + s.rate + ')</span></div>';
+                            }
+                        }, {
+                            targets: 5,
+                            responsivePriority: 1,
+                            render: function(t, e, s, a) {
+                                if (s.photo) {
+                                    return '<div class="d-flex justify-content-start align-items-center product-name">' +
+                                        '<div class="avatar-wrapper">' +
+                                        '<div class="avatar avatar me-2 rounded-2 bg-label-secondary">' +
+                                        '<img src="/images/' + s.photo + '" class="rounded-2" style="width: 40px; height: 40px; object-fit: cover;">' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</div>';
+                                } else {
+                                    return '<div class="d-flex justify-content-start align-items-center product-name">' +
+                                        '<div class="avatar-wrapper">' +
+                                        '<div class="avatar avatar me-2 rounded-2 bg-label-secondary">' +
+                                        '<span class="avatar-initial rounded-2">-</span>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</div>';
+                                }
+                            }
+                        }, {
+                            targets: 6,
+                            responsivePriority: 1,
+                            render: function(t, e, s, a) {
+                                return `
+                                    <div class="d-flex align-items-sm-center justify-content-sm-center">
+                                        <a href="rateing/${s.id}/edit" class="btn btn-sm btn-icon btn-outline-primary me-1">
+                                            <i class="bx bx-edit"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-icon btn-outline-danger delete-btn" 
+                                                data-id="${s.id}" 
+                                                data-name="${s.name}">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>`;
+                            }
+                        }, {
                             targets: -1,
-
                             searchable: !1,
                             orderable: !1,
-
                         }
-
                     ],
-
                     order: [2, "desc"],
                     dom: '<"card-header d-flex border-top rounded-0 flex-wrap py-md-0"<"me-5 ms-n2 pe-5"f><"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex align-items-start align-items-md-center justify-content-sm-center mb-3 mb-sm-0"lB>>>t<"row mx-2"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
                     lengthMenu: [10, 20, 50, 70, 100],
@@ -312,23 +245,20 @@
                             }
                         }
                     },
+                });
 
+                // Handle delete button clicks
+                $(document).on('click', '.delete-btn', function() {
+                    const id = $(this).data('id');
+                    const name = $(this).data('name');
+                    
+                    if (confirm('هل أنت متأكد من حذف التقييم: ' + name + '؟')) {
+                        $('.val').val(id);
+                        $('#basicModal2').modal('show');
+                    }
                 });
             });
-
-
-            //     function edit(id){
-            //       $('#edit').val(id);
-
-            //     }
-
-            // $('#EditModel').on('show', function (event) {
-            //       console.log(event)
-            //     });
         </script>
-
-
-
 
         {{-- -------------------------------------------------------------- Delete-------------------------------------------------------------------- --}}
 
@@ -345,16 +275,10 @@
                                 @method('delete')
                                 @csrf
                                 <div id="name" class=" col mb-3">
-
-                                    ﻫﻞ اﻧﺖ ﻣﺘﺄﻛﺪ ﻣﻦ اﻧﻚ ﺗﺮﻳﺪ اﻟﺤﺬﻑ؟
-
+                                    هل أنت متأكد من انك تريد الحذف؟
                                 </div>
                                 <input class="val" type="hidden" name="id">
-
-
                         </div>
-
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal"
@@ -367,13 +291,7 @@
         </div>
         {{-- --------------------------------------------------------------end Delete-------------------------------------------------------------------- --}}
 
-
-
-
-
     @endsection
-
-
 
     @section('footer')
 
