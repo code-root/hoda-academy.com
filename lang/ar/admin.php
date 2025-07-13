@@ -367,4 +367,13 @@ return [
 // نهاية التنبيهات
 'Show Page' => 'إظهار الصفحة',
 
+// المدرسين
+'Teacher created successfully' => 'تم إنشاء المدرس بنجاح',
+'Teacher updated successfully' => 'تم تحديث المدرس بنجاح',
+'Error occurred while creating teacher' => 'حدث خطأ أثناء إنشاء المدرس',
+'Error occurred while updating teacher' => 'حدث خطأ أثناء تحديث المدرس',
+'Error occurred while deleting teacher' => 'حدث خطأ أثناء حذف المدرس',
+'Add Another Description' => 'إضافة وصف آخر',
+'Session' => 'الجلسة',
+
 ];

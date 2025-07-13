@@ -56,54 +56,52 @@ class TeacherController extends Controller
                 'name_en' => 'required|string|max:255',
                 'meta_description_ar' => 'required|string|max:255',
                 'meta_description_en' => 'required|string|max:255',
-                'phone' => 'required|string|max:20',
+                'phone' => 'required|string|max:20|unique:users,phone',
                 'country_id' => 'required|exists:countries,id',
                 'category' => 'required|string',
                 'overview_ar' => 'required|string',
                 'overview_en' => 'required|string',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'sometimes|string|min:8',
-                'photo' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'title_ar1.*' => 'sometimes|string|max:255',
-                'title_en1.*' => 'sometimes|string|max:255',
-                'description_ar1.*' => 'sometimes|string',
-                'description_en1.*' => 'sometimes|string',
+                'password' => 'required|string|min:8',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'title_ar1.*' => 'nullable|string|max:255',
+                'title_en1.*' => 'nullable|string|max:255',
+                'description_ar1.*' => 'nullable|string',
+                'description_en1.*' => 'nullable|string',
             ]);
 
-            $user = User::create($request->except('photo', 'title_ar1', 'title_en1', 'description_ar1', 'description_en1'));
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-            $user->save();
+            try {
+                $userData = $request->except('photo', 'title_ar1', 'title_en1', 'description_ar1', 'description_en1');
+                $userData['role'] = 2; // Teacher role
+                $userData['password'] = Hash::make($request->password);
+                
+                $user = User::create($userData);
+
+                if ($request->hasFile('photo')) {
+                    $user->setImageAttribute([$request->file('photo')]);
+                    $user->save();
+                }
+
+                // Handle UserDescription
+                if (!empty($request->title_ar1)) {
+                    foreach ($request->title_ar1 as $key => $value) {
+                        if (!empty($value)) {
+                            UserDescription::create([
+                                'user_id' => $user->id,
+                                'title_ar' => $request->title_ar1[$key],
+                                'title_en' => $request->title_en1[$key] ?? '',
+                                'description_ar' => $request->description_ar1[$key] ?? '',
+                                'description_en' => $request->description_en1[$key] ?? '',
+                            ]);
+                        }
+                    }
+                }
+
+                return redirect()->route('teachers.index')->with('success', __('admin.Teacher created successfully'));
+            } catch (\Exception $e) {
+                return redirect()->back()->withInput()->with('error', __('admin.Error occurred while creating teacher'));
+            }
         }
-        if ($request->hasFile('photo')) {
-
-            $user->setImageAttribute([$request->file('photo')]);
-            $user->save();
-        }
-
-#############################UserDescription#########################################
-
-if (!empty($request->title_ar1)) {
-
-
-    foreach ($request->title_ar1 as $key => $value) {
-
-
-        UserDescription::create([
-            'user_id'          => $user->id,
-            'title_ar'          => $request->title_ar1[ $key],
-            'title_en'          => $request->title_en1[ $key],
-            'description_ar'          => $request->description_ar1[ $key],
-            'description_en'          => $request->description_en1[ $key],
-
-        ]);
-    }
-    }
-    #############################End UserDescription#########################################
-
-
-        return redirect()->route('teachers.index')->with('success', 'Teachers created successfully.');
-    }
 
     /**
      * Display the specified resource.
@@ -127,47 +125,69 @@ if (!empty($request->title_ar1)) {
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request,  $id)
+    public function update(Request $request, $id)
     {
-
-
         $user = User::findOrFail($id);
-         $user->update($request->except('photo', 'password','title_ar1','title_en1','description_ar1','description_en1'));
-
-         if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
-
-
-        if ($request->hasFile('photo')) {
-
-            if ($user->photo) {
-                Storage::disk('setting')->delete($user->photo);
-            }
-            $user->setImageAttribute([$request->file('photo')]);
-            $user->save();
-        }
-         $user->save();
-#############################UserDescription#########################################
-
-if (!empty($request->title_ar1)) {
-
-    UserDescription::where('user_id', $user->id)->delete();
-    foreach ($request->title_ar1 as $key => $value) {
-
-
-        UserDescription::create([
-            'user_id'          => $user->id,
-            'title_ar'          => $request->title_ar1[ $key],
-            'title_en'          => $request->title_en1[ $key],
-            'description_ar'          => $request->description_ar1[ $key],
-            'description_en'          => $request->description_en1[ $key],
-
+        
+        $validated = $request->validate([
+            'name_ar' => 'required|string|max:255',
+            'name_en' => 'required|string|max:255',
+            'meta_description_ar' => 'required|string|max:255',
+            'meta_description_en' => 'required|string|max:255',
+            'phone' => 'required|string|max:20|unique:users,phone,' . $id,
+            'country_id' => 'required|exists:countries,id',
+            'category' => 'required|string',
+            'overview_ar' => 'required|string',
+            'overview_en' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'title_ar1.*' => 'nullable|string|max:255',
+            'title_en1.*' => 'nullable|string|max:255',
+            'description_ar1.*' => 'nullable|string',
+            'description_en1.*' => 'nullable|string',
         ]);
-    }
-    }
-    #############################End UserDescription#########################################
-        return redirect()->route('teachers.index')->with('success', 'Teacher updated successfully.');
+
+        try {
+            $userData = $request->except('photo', 'password', 'title_ar1', 'title_en1', 'description_ar1', 'description_en1');
+            
+            if ($request->filled('password')) {
+                $userData['password'] = Hash::make($request->password);
+            }
+
+            $user->update($userData);
+
+            if ($request->hasFile('photo')) {
+                // Delete old photo if exists
+                if ($user->photo) {
+                    Storage::disk('setting')->delete($user->photo);
+                }
+                $user->setImageAttribute([$request->file('photo')]);
+                $user->save();
+            }
+
+            // Handle UserDescription
+            if (!empty($request->title_ar1)) {
+                // Delete existing descriptions
+                UserDescription::where('user_id', $user->id)->delete();
+                
+                foreach ($request->title_ar1 as $key => $value) {
+                    if (!empty($value)) {
+                        UserDescription::create([
+                            'user_id' => $user->id,
+                            'title_ar' => $request->title_ar1[$key],
+                            'title_en' => $request->title_en1[$key] ?? '',
+                            'description_ar' => $request->description_ar1[$key] ?? '',
+                            'description_en' => $request->description_en1[$key] ?? '',
+                        ]);
+                    }
+                }
+            }
+
+            return redirect()->route('teachers.index')->with('success', __('admin.Teacher updated successfully'));
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', __('admin.Error occurred while updating teacher'));
+        }
     }
 
 
@@ -176,22 +196,28 @@ if (!empty($request->title_ar1)) {
      */
     public function destroy(Request $request)
     {
-        $ex = explode(',', $request->id);
+        try {
+            $ex = explode(',', $request->id);
 
+            foreach ($ex as $value) {
+                $teacher = User::findOrFail($value);
+                
+                // Delete photo if exists
+                if ($teacher->photo) {
+                    Storage::disk('setting')->delete($teacher->photo);
+                }
+                
+                // Delete related descriptions
+                UserDescription::where('user_id', $teacher->id)->delete();
+                
+                $teacher->delete();
+            }
 
-
-foreach ($ex as $key => $value) {
-    $teacher = User::findOrFail($value);
-    if ($teacher->photo) {
-        Storage::disk('setting')->delete($teacher->photo);
-    }
-    $teacher->delete();
-}
-
-
-
-session()->flash('success', __('admin.Deleted Successfully'));
-
-        return redirect()->back();
+            session()->flash('success', __('admin.Deleted Successfully'));
+            return redirect()->back();
+        } catch (\Exception $e) {
+            session()->flash('error', __('admin.Error occurred while deleting teacher'));
+            return redirect()->back();
+        }
     }
 }

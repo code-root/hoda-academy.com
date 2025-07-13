@@ -66,13 +66,11 @@ class User extends Authenticatable
     {
         if (is_array($value)) {
             foreach ($value as $file) {
-                if (is_file($file) and !empty($file)) {
-                      self::update([
-                        'photo' => $file->store('setting', 'setting'),
-                    ]);
+                if (is_file($file) && !empty($file)) {
+                    $this->attributes['photo'] = $file->store('setting', 'setting');
                 }
             }
-        }elseif (is_file($value)) {
+        } elseif (is_file($value)) {
             $this->attributes['photo'] = $value->store('setting', 'setting');
         } else {
             $this->attributes['photo'] = $value;

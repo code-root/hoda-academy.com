@@ -308,7 +308,7 @@ $(document).ready(function() {
                     var colors = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
                     var randomColor = colors[Math.floor(Math.random() * colors.length)];
                     var avatarContent = s.photo ?
-                        `<img src="{{ asset('images') }}/${s.photo}" alt="${customerName}" class="avatar-img rounded-circle" />` :
+                        `<img src="{{ asset('images/setting') }}/${s.photo}" alt="${customerName}" class="avatar-img rounded-circle" />` :
                         `<span class="avatar-initial rounded-circle bg-label-${randomColor}">${initials}</span>`;
                     return `
                         <div class="d-flex justify-content-start align-items-center customer-name">

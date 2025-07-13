@@ -369,4 +369,12 @@ return [
 'Photo size cannot exceed 2MB' => 'Photo size cannot exceed 2MB',
 'Show Page' => 'Show Page',
 
+// Teachers
+'Teacher created successfully' => 'Teacher created successfully',
+'Teacher updated successfully' => 'Teacher updated successfully',
+'Error occurred while creating teacher' => 'Error occurred while creating teacher',
+'Error occurred while updating teacher' => 'Error occurred while updating teacher',
+'Error occurred while deleting teacher' => 'Error occurred while deleting teacher',
+'Session' => 'Session',
+
 ];

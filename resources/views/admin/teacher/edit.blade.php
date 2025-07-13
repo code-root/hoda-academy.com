@@ -164,7 +164,7 @@
                                                     <hr>
                                                 @endforeach
                                             </div>
-                                            <button type="button" class="btn btn-primary mt-2" onclick="additem()">
+                                            <button type="button" class="btn btn-primary mt-2" onclick="addItem()">
                                                 {!! __('admin.Add Another Description') !!}
                                             </button>
                                             @error('Item')
@@ -188,10 +188,12 @@
                                         <div class="col-12 col-md-12 mt-3">
                                             <label class="form-label mb-0" for="photo">{!! __('admin.Photo') !!}</label>
                                             <input type="file" class="form-control" id="photo" name="photo">
-                                            <br>
-                                            <img style="width: 120px;height:auto"
-                                                src="{{ asset('images') }}/{{ $teachers->photo != null ? $teachers->photo : 'no-image.png' }}"
-                                                alt="">
+                                            @if($teachers->photo)
+                                                <br>
+                                                <img style="width: 120px;height:auto"
+                                                    src="{{ asset('images/setting/' . $teachers->photo) }}"
+                                                    alt="{{ $teachers->name_ar }}" class="img-thumbnail">
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-end gap-3 mt-4">
@@ -213,7 +215,7 @@
 @section('footer')
 <script src="{{ asset('admin') }}/js/app-ecommerce-settings.js"></script>
 <script>
-    function additem() {
+    function addItem() {
         var item = `
         <div class="option-row1 row">
             <div class="mb-3 col-5">
